@@ -1,14 +1,20 @@
+const main = @import("main.zig");
+
+
 const std = @import("std");
-const ArrayList = std.ArrayList;
 
 /// This imports the separate module containing `root.zig`. Take a look in `build.zig` for details.
 const lib = @import("TicTacToe_lib");
-const main = @import("main.zig");
+
+
+const ArrayList = std.ArrayList;
 var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 const allocator = gpa.allocator();
 
 
 pub fn main_game_loop() !main.GameState{
+
+    var board = main.get_empty_board();
     const rand = std.crypto.random;
 
     var move_pool = ArrayList(struct{u8,u8}).init(allocator);
@@ -33,13 +39,9 @@ pub fn main_game_loop() !main.GameState{
         const blank = move_pool.swapRemove(r);
         const x, const y = blank;
 
-        main.move(y,x,players_turn) catch |err| {
-            std.debug.print("error, {any}\n", .{err});
-        };   
-        main.print_array();
+        board = try main.move(board, y,x,players_turn);
  
-        const result = main.is_winner();
-        std.debug.print("result, {any}\n", .{result});
+        const result = main.is_winner(board);
         if(result != main.GameState.no_result){
             game_state = result;
         }
