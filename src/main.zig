@@ -7,15 +7,16 @@ const ArrayList = std.ArrayList;
 
 /// This imports the separate module containing `root.zig`. Take a look in `build.zig` for details.
 const lib = @import("TicTacToe_lib");
+const random_move = @import("random_move.zig");
 var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 const allocator = gpa.allocator();
 
-const Players = enum(u8){
+pub const Players = enum(u8){
     player_1 = 1,
     player_2 = 2
 };
 
-const GameState = enum{
+pub const GameState = enum{
     no_result,
     player_1_wins,
     player_2_wins,
@@ -31,66 +32,17 @@ var board = [3][3]u8{
     [_]u8{0,0,0}
 };
 pub fn main() !void {
-    std.debug.print("result is {any}", .{main_game_loop()});
+    std.debug.print("result is {any}", .{random_move.main_game_loop()});
 }
 
 
-fn main_game_loop() !GameState{
-    const rand = std.crypto.random;
 
-    var move_pool = ArrayList(struct{u8,u8}).init(allocator);
-    defer move_pool.deinit();
-
-    try move_pool.append(.{0,0});
-    try move_pool.append(.{1,0});
-    try move_pool.append(.{2,0});
-    try move_pool.append(.{0,1});
-    try move_pool.append(.{1,1});
-    try move_pool.append(.{2,1});
-    try move_pool.append(.{0,2});
-    try move_pool.append(.{1,2});
-    try move_pool.append(.{2,2});
-
-    var game_state = GameState.no_result;
-    var players_turn = Players.player_1;
-
-    while(game_state == GameState.no_result){
-        const r = rand.intRangeAtMost(usize, 0, move_pool.items.len-1);
-
-        const blank = move_pool.swapRemove(r);
-        const x, const y = blank;
-
-        move(y,x,players_turn) catch |err| {
-            std.debug.print("error, {any}\n", .{err});
-        };   
-        print_array();
- 
-        const result = is_winner();
-        std.debug.print("result, {any}\n", .{result});
-        if(result != GameState.no_result){
-            game_state = result;
-        }
-
-        if(players_turn == Players.player_1){
-            players_turn = Players.player_2;
-        }
-        
-        else{
-            players_turn = Players.player_1;
-        }
-
-    }
-    return game_state;
-
-    
-
- }
 
 // function to perform a move
 // accepts coordinates, and player.
 // returns false if invalid
 // returns true if valid move
-fn move(y: u8,x: u8, player: Players) !void {
+pub fn move(y: u8,x: u8, player: Players) !void {
     const temp_val: u8 = board[y][x]; 
     if (1 == temp_val or 2 == temp_val){
 
@@ -104,7 +56,7 @@ fn move(y: u8,x: u8, player: Players) !void {
 
 
 
-fn is_winner() GameState{
+pub fn is_winner() GameState{
     const player1_win = [1]u8{@intFromEnum(Players.player_1)} ** 3;
     const player2_win = [1]u8{@intFromEnum(Players.player_2)} ** 3;
 
@@ -182,9 +134,8 @@ fn is_winner() GameState{
 
 
 
-fn print_array() void{
+pub fn print_array() void{
     std.debug.print("{any}\n", .{board[0]});
     std.debug.print("{any}\n", .{board[1]});
     std.debug.print("{any}\n\n", .{board[2]});
 }
-
