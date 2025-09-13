@@ -3,13 +3,13 @@
 //! is to delete this file and start with root.zig instead.
 const random_move = @import("random_move.zig");
 const simumations = @import("simulations.zig");
+const minimax = @import("minimax.zig");
 const std = @import("std");
 const ArrayList = std.ArrayList;
 
 
 const lib = @import("TicTacToe_lib");
-var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-const allocator = gpa.allocator();
+
 
 pub const Players = enum(u8){
     player_1 = 1,
@@ -25,9 +25,11 @@ pub const GameState = enum{
 
 
 pub fn main() !void {
-    try simumations.simulate_random_move();
-}
+    const result = try minimax.main_game_loop();
+    std.debug.print("result: {any}", .{result});
 
+//    try simumations.simulate_minimax();
+}
 
 pub fn get_empty_board() [3][3]u8{
     return [3][3]u8{
@@ -38,6 +40,8 @@ pub fn get_empty_board() [3][3]u8{
 }
 
 
+
+// pure functions to work on a board.
 
 pub fn move(board:[3][3]u8, y: u8,x: u8, player: Players) ![3][3]u8 {
     var temp_board = board;
