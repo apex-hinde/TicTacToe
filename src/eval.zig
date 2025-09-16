@@ -6,9 +6,9 @@ const allocator = gpa.allocator();
 
 //evaluates the current board state from -1 to 1, 1 is player 1 has a high chance of success and visa verse
 
-pub fn eval_function(board: [3][3]u8, player: main.Players) f32{
+pub fn eval_function(board: [3][3]u8, player: main.Players) i32{
 
-    var eval:f32 = 0;
+    var eval:i32 = 0;
 
     eval += evaluate_line(board[0]);
     eval += evaluate_line(board[1]);
@@ -30,10 +30,10 @@ pub fn eval_function(board: [3][3]u8, player: main.Players) f32{
 }
 
 
-fn evaluate_line(line: [3]u8) f32{
+fn evaluate_line(line: [3]u8) i32{
     var counter1: u32 = 0;
     var counter2: u32 = 0;
-    var tot: f32 = 0;
+    var tot: i32 = 0;
 
     for(line) |cell|{
 

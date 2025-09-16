@@ -6,6 +6,7 @@ const simumations = @import("simulations.zig");
 const minimax = @import("minimax.zig");
 const std = @import("std");
 const ArrayList = std.ArrayList;
+const allocator = std.heap.smp_allocator;
 
 
 const lib = @import("TicTacToe_lib");
@@ -27,8 +28,6 @@ pub const GameState = enum{
 pub fn main() !void {
     const result = try minimax.main_game_loop();
     std.debug.print("result: {any}", .{result});
-
-//    try simumations.simulate_minimax();
 }
 
 pub fn get_empty_board() [3][3]u8{
@@ -43,7 +42,7 @@ pub fn get_empty_board() [3][3]u8{
 
 // pure functions to work on a board.
 
-pub fn move(board:[3][3]u8, y: u8,x: u8, player: Players) ![3][3]u8 {
+pub fn move(board:[3][3]u8, x: u8,y: u8, player: Players) ![3][3]u8 {
     var temp_board = board;
     const temp_val: u8 = temp_board[y][x]; 
     if (1 == temp_val or 2 == temp_val){
