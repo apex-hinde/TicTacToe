@@ -5,8 +5,9 @@ const random_move = @import("random_move.zig");
 const simumations = @import("simulations.zig");
 const minimax = @import("minimax.zig");
 const std = @import("std");
+const Allocator = std.mem.Allocator;
 const ArrayList = std.ArrayList;
-const allocator = std.heap.smp_allocator;
+const allocator = std.heap.page_allocator;
 
 
 const lib = @import("TicTacToe_lib");
@@ -25,9 +26,24 @@ pub const GameState = enum{
 };
 
 
-pub fn main() !void {
-    const result = try minimax.main_game_loop();
-    std.debug.print("result: {any}", .{result});
+pub fn main() void {
+//    var possible_moves = ArrayList(struct{u8,u8}).init(allocator);
+//    defer possible_moves.deinit();
+//    possible_moves.append(.{1,1});
+//    var possible_moves_test = ArrayList(u8).init(allocator);
+//    defer possible_moves_test.deinit();
+ //   try possible_moves_test.append(8);
+    const memory = try allocator.alloc(u8, 100);
+    defer allocator.free(memory);
+
+
+
+//    const board = get_empty_board();
+//    const moves = minimax.get_possible_moves(board);
+//   _ = moves; // autofix
+
+//    const result = try minimax.main_game_loop();
+//    std.debug.print("result: {any}", .{result});
 }
 
 pub fn get_empty_board() [3][3]u8{

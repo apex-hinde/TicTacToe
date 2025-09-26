@@ -41,7 +41,7 @@ fn evaluate_line(line: [3]u8) i32{
             1 => counter1 += 1,
             2 => counter2 += 1,
             else => {}
-        }   
+        }
     }
     switch (counter1){
         1 => tot += 1,

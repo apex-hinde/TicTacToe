@@ -1,9 +1,9 @@
 const std = @import("std");
 const main = @import("main.zig");
 const eval = @import("eval.zig");
+    const allocator = std.heap.smp_allocator;
 
 const ArrayList = std.ArrayList;
-const allocator = std.heap.smp_allocator;
 
 pub fn main_game_loop() !main.GameState{
     var board = main.get_empty_board();
@@ -47,20 +47,8 @@ pub fn main_game_loop() !main.GameState{
 
 fn minimax(depth: u32, max_height: u32, is_max: bool, board: [3][3]u8, player: main.Players) struct{i32, struct{u8,u8}}{
    
-    var possible_moves: ArrayList(struct{u8,u8}) = ArrayList(struct{u8,u8}).init(allocator);
+    const moves = get_possible_moves(board);
 
-    for (board, 0..) |row, row_index| {
-        for (row, 0..) |cell, col_index| {
-
-            if(cell == 0){
-                try possible_moves.append(.{@intCast(col_index), @intCast(row_index)});
-            }
-        }
-    }
-    const moves = try possible_moves.toOwnedSlice(); 
-    if(true){
-        return(.{eval.eval_function(board, player), moves[0]});
-    }
     if(depth == max_height){
         return(.{eval.eval_function(board, player), moves[0]});
         
@@ -98,3 +86,18 @@ fn minimax(depth: u32, max_height: u32, is_max: bool, board: [3][3]u8, player: m
     }
 }
 
+
+pub fn get_possible_moves(board: [3][3]u8) []struct{u8,u8}{
+    _ = board;
+    var possible_moves_test = ArrayList(struct{u8,u8}).init(allocator);
+    defer possible_moves_test.deinit();
+    try possible_moves_test.append(.{2,2});
+//    for (board, 0..) |row, row_index| {
+//        for (row, 0..) |cell, col_index| {
+//            if(cell == 0){
+//                try possible_moves.append(.{@intCast(col_index), @intCast(row_index)});
+//            }
+//        }
+//    }
+
+}
